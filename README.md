@@ -156,7 +156,7 @@ Recicland permite la incorporación de **desechos** y **contenedores** personali
 
 ## Licencia
 
-Este proyecto está licenciado bajo los términos de la **Licencia Pública General Affero de GNU v3.0 (AGPL-3.0)**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está licenciado bajo los términos de la **Licencia Pública General Affero de GNU v3.0 (AGPL-3.0)**. Consulta el archivo [LICENSE](LICENSE.md) para más detalles.
 
 ## Créditos
 
