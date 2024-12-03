@@ -18,7 +18,7 @@ public class Recicland {
         Fuente.cargarFuente("/fonts/minecraft.ttf");
 
         // Crear el JFrame principal
-        JFrame frame = new JFrame("Recicland 0.20.0");
+        JFrame frame = new JFrame("Recicland 0.80.0");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1280, 720);
         frame.setMinimumSize(new Dimension(1280, 720));
@@ -54,6 +54,7 @@ public class Recicland {
         // Crear y reproducir la música de fondo para los menús
         musicaMenu = new Sonido("/sounds/menuMusic.wav");
         musicaMenu.reproducirEnBucle();
+        musicaMenu.setVolumen(0.8f);
 
         // Detener la música al cerrar la aplicación
         frame.addWindowListener(new WindowAdapter() {

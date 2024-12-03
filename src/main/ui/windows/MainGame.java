@@ -9,8 +9,10 @@ import main.utils.Sonido;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class MainGame extends JPanel {
@@ -60,6 +62,7 @@ public class MainGame extends JPanel {
     private List<Contenedor> contenedoresNivelActual;
     private List<String> pasosTratamientoDesordenados;
     private List<String> pasosTratamientoCorrectos;
+    private String msg;
 
     // Paneles
     private JPanel panelFondo;
@@ -82,6 +85,7 @@ public class MainGame extends JPanel {
 
         // Cargar música del juego
         musicaJuego = new Sonido("/sounds/gameMusic.wav");
+        musicaJuego.setVolumen(0.8f);
 
         // Configurar el panel (inicializa los componentes gráficos)
         configurarPanel();
@@ -689,6 +693,9 @@ public class MainGame extends JPanel {
                     // Contenedor incorrecto
                     jugadorActual.restarVida(nivelActual.getVidasPerdidasPorError());
                     mostrarMensaje("Contenedor incorrecto. Vidas restantes: " + jugadorActual.getVidas());
+                    msg=desechoActual.getNombre() + " ha sido incorrectamente clasificado -" + nivelActual.getVidasPerdidasPorError() + " vidas";
+                    registrarEventoJugador(jugadorActual.getNombre(), msg);
+                    actualizarRecord(jugadorActual.getNombre(), jugadorActual.getPuntos());
                     actualizarInformacionPantalla();
                     if (jugadorActual.getVidas() <= 0) {
                         verificarFinDeTurno();
@@ -966,6 +973,9 @@ public class MainGame extends JPanel {
             jugadorActual.sumarPuntos(nivelActual.getPuntosPorRespuesta());
             desechosClasificadosCorrectamente++;
             mostrarMensaje("¡Correcto! Puntos actuales: " + jugadorActual.getPuntos());
+            msg=desechoActual.getNombre() + " ha sido correctamente clasificado y tratado +" + nivelActual.getPuntosPorRespuesta() + " puntos";
+            registrarEventoJugador(jugadorActual.getNombre(), msg);
+            actualizarRecord(jugadorActual.getNombre(), jugadorActual.getPuntos());
             actualizarInformacionPantalla();
 
             // Agregar el desecho actual al registro del jugador
@@ -974,6 +984,9 @@ public class MainGame extends JPanel {
             // Tratamiento incorrecto
             jugadorActual.restarVida(nivelActual.getVidasPerdidasPorError());
             mostrarMensaje("Tratamiento incorrecto. Vidas restantes: " + jugadorActual.getVidas());
+            msg = desechoActual.getNombre() + " ha sido correctamente clasificado, pero no fue tratado adecuadamente -" + nivelActual.getVidasPerdidasPorError() + " vidas";
+            registrarEventoJugador(jugadorActual.getNombre(), msg);
+            actualizarRecord(jugadorActual.getNombre(), jugadorActual.getPuntos());
             actualizarInformacionPantalla();
         }
 
@@ -987,6 +1000,85 @@ public class MainGame extends JPanel {
             verificarFinDeTurno();
         } else {
             cargarSiguienteDesecho();
+        }
+    }
+
+    public void registrarEventoJugador(String nombreJugador, String evento) {
+        File archivo = new File(nombreJugador + ".dat");
+        int record = 0;
+        List<Long> fechas = new ArrayList<>();
+        List<String> mensajes = new ArrayList<>();
+
+        if (archivo.exists() && archivo.length() > 0) {
+            try (DataInputStream dis = new DataInputStream(new FileInputStream(archivo))) {
+                record = dis.readInt();
+                int numEventos = dis.readInt();
+                for (int i = 0; i < numEventos; i++) {
+                    long fecha = dis.readLong();
+                    String mensajeEvento = dis.readUTF();
+                    fechas.add(fecha);
+                    mensajes.add(mensajeEvento);
+                }
+            } catch (IOException e) {
+                System.err.println("Archivo corrupto o vacío. Se inicializará un nuevo registro para el jugador.");
+                record = 0;
+                fechas.clear();
+                mensajes.clear();
+            }
+        }
+
+        fechas.add(new Date().getTime());
+        mensajes.add(evento);
+
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(archivo))) {
+            dos.writeInt(record);
+            dos.writeInt(fechas.size());
+            for (int i = 0; i < fechas.size(); i++) {
+                dos.writeLong(fechas.get(i));
+                dos.writeUTF(mensajes.get(i));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void actualizarRecord(String nombreJugador, int nuevoPuntaje) {
+        File archivo = new File(nombreJugador + ".dat");
+        int record = 0;
+        List<Long> fechas = new ArrayList<>();
+        List<String> mensajes = new ArrayList<>();
+
+        if (archivo.exists() && archivo.length() > 0) {
+            try (DataInputStream dis = new DataInputStream(new FileInputStream(archivo))) {
+                record = dis.readInt();
+                int numEventos = dis.readInt();
+                for (int i = 0; i < numEventos; i++) {
+                    long fecha = dis.readLong();
+                    String mensajeEvento = dis.readUTF();
+                    fechas.add(fecha);
+                    mensajes.add(mensajeEvento);
+                }
+            } catch (IOException e) {
+                System.err.println("Archivo corrupto o vacío. Se inicializará un nuevo registro para el jugador.");
+                record = 0;
+                fechas.clear();
+                mensajes.clear();
+            }
+        }
+
+        if (nuevoPuntaje > record) {
+            record = nuevoPuntaje;
+        }
+
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(archivo))) {
+            dos.writeInt(record);
+            dos.writeInt(fechas.size());
+            for (int i = 0; i < fechas.size(); i++) {
+                dos.writeLong(fechas.get(i));
+                dos.writeUTF(mensajes.get(i));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

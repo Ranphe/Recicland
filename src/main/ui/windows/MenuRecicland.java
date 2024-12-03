@@ -132,7 +132,7 @@ public class MenuRecicland extends JPanel {
         botonCerrar = Boton.crearBoton(botonMediano, botonMedianoResaltado, 197, 40, "Cerrar Recicland", 16f);
         botonIdioma = Boton.crearBotonConIcono(botonPequeno, botonPequenoResaltado, 40, 40, "", 0, 30, 0, 0, 16f, iconoIdioma);
         botonAccesibilidad = Boton.crearBotonConIcono(botonPequeno, botonPequenoResaltado, 40, 40, "", 0, 30, 0, 0, 16f, iconoAccesibilidad);
-        informacion1 = Boton.crearBotonTexto("Recicland 0.20.0", false, 16f);
+        informacion1 = Boton.crearBotonTexto("Recicland 0.80.0", false, 16f);
         informacion2 = Boton.crearBotonTexto("2024 ¡Gratuito y de código abierto!", true, 16f);
         textoAnimado = new TextoAnimado("¡Cuida nuestro planeta!");
 
@@ -158,6 +158,7 @@ public class MenuRecicland extends JPanel {
         innerBotonLeaderboard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Leaderboard.actualizarTop10();
                 cardLayout.show(mainPanel, "leaderboard");
             }
         });
@@ -184,6 +185,7 @@ public class MenuRecicland extends JPanel {
         innerBotonAccesibilidad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Accesibilidad.actualizarListaJugadores();
                 cardLayout.show(mainPanel, "accesibilidad");
             }
         });
@@ -204,7 +206,7 @@ public class MenuRecicland extends JPanel {
                 try {
                     // Verifica si Desktop está soportado en el sistema y si puede manejar URIs
                     if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                        Desktop.getDesktop().browse(new URI("https://github.com/ranphe"));
+                        Desktop.getDesktop().browse(new URI("https://github.com/Ranphe/Recicland"));
                     } else {
                         JOptionPane.showMessageDialog(null, "No se puede abrir el enlace en el navegador.", "Error", JOptionPane.ERROR_MESSAGE);
                     }
