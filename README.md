@@ -161,3 +161,9 @@ Este proyecto está licenciado bajo los términos de la **Licencia Pública Gene
 ## Créditos
 
 Desarrollado por **[Ranphe]**.
+
+## Agradecimientos
+
+Agradecemos sinceramente a todas las personas que han contribuido al desarrollo de **Recicland**. Su dedicación y esfuerzo han sido fundamentales para llevar este proyecto adelante.
+
+Puedes ver la lista completa de contribuidores en el archivo [CONTRIBUTORS.md](CONTRIBUTORS.md).
